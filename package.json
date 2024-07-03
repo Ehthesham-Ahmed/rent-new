@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/Ehthesham-Ahmed/rent-new#readme",
   "dependencies": {
-    "express": "^4.19.2"
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "mongoose": "^8.4.4"
   }
 }
