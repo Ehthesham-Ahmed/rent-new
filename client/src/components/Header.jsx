@@ -1,11 +1,13 @@
 import React from 'react'
-import { Button, Navbar, TextInput } from 'flowbite-react'
+import { Avatar, Button, Dropdown, Navbar, TextInput } from 'flowbite-react'
 import { Link, useLocation } from 'react-router-dom'
+import { useSelector } from 'react-redux';
 //import { AiOutlineSearch } from 'react-icons/ai';
 
 
 export default function Header() {
     const path = useLocation().pathname;
+    const { currentUser } = useSelector(state => state.user)
     return (
         <Navbar className='border-b-2'>
             <Link to='/'
@@ -21,17 +23,50 @@ export default function Header() {
                     className='hidden lg:inline'
                 /> 
             </form> */}
-            <div className='relative flex items-center w-full max-w-xs gap-2 md:order-2 ml-auto'>
-                <Link to='sign-in'>
+            {
+                currentUser ? (
+                    <div className='ml-auto'>
+                        <Dropdown
+                            arrowIcon={false}
+                            inline
+                            label={
+                                <Avatar alt='user'
+                                    img={currentUser.profilePicture}
+                                    rounded />
+                            }
+                        >
+                            <Dropdown.Header>
+                                <span className='block text-sm'>@{currentUser.username}</span>
+                                <span className='block text-sm font-medium truncate'>
+                                    {currentUser.email}
+                                </span>
+                            </Dropdown.Header>
+                            <Link to={'/dashboard?tab=profile'}>
+                                <Dropdown.Item>Profile</Dropdown.Item>
+                            </Link>
+                            <Dropdown.Divider />
+                            <Dropdown.Item
+                            //onClick={handleSignout}
+                            >
+                                Sign out
+                            </Dropdown.Item>
+                        </Dropdown>
+                    </div>
+                ) : (
 
-                    <Button className='w-20 text-black bg-blue-500 p-1 m-2'>
-                        <h1 className='p-1 mx-2 text-nowrap font-semibold'>
-                            Sign In
-                        </h1>
+                    <div className='relative flex items-center w-full max-w-xs gap-2 md:order-2 ml-auto'>
+                        <Link to='sign-in'>
 
-                    </Button>
-                </Link>
-            </div>
+                            <Button className='w-20 text-black bg-blue-500 p-1 m-2'>
+                                <h1 className='p-1 mx-2 text-nowrap font-semibold'>
+                                    Sign In
+                                </h1>
+
+                            </Button>
+                        </Link>
+                    </div>
+                )
+            }
         </Navbar>
     )
 }
