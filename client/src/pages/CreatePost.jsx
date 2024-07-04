@@ -18,14 +18,24 @@ export default function CreatePost() {
                         placeholder='Car company'
                         required
                         id='carcompany' />
+
                     <TextInput type='number'
                         placeholder='Price per day'
                         required
                         id='price' />
-                    <Select>
+                    <Select required
+                        id='fuel'>
+                        <option value='uncategorized'>Fuel</option>
                         <option value='petrol'>Petrol</option>
                         <option value='diesel'>Diesel</option>
                         <option value='electric'>Electric</option>
+                    </Select>
+                    <Select required
+                        id='seats'>
+                        <option value='uncategorized'>Seats</option>
+                        <option value='5seater'>5 Seater</option>
+                        <option value='6seater'>6 Seater</option>
+                        <option value='7seater'>7 Seater</option>
                     </Select>
                 </div>
                 {/* <div className='flex flex-col gap-4 sm:flex-row justify-between'>
