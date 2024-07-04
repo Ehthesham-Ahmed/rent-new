@@ -20,6 +20,10 @@ const userSchema = new mongoose.Schema(
             type: String,
             default: "https://i.pinimg.com/originals/e0/c6/5c/e0c65c581f5b52256992fc601e2138af.jpg",
         },
+        isAdmin: {
+            type: Boolean,
+            default: false,
+        },
     },
     { timestamps: true }
 );
