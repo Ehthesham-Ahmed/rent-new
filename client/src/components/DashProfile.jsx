@@ -1,11 +1,11 @@
-import { TextInput } from 'flowbite-react';
+import { Button, TextInput } from 'flowbite-react';
 import React from 'react'
 import { useDispatch, useSelector } from 'react-redux';
 import { signoutSuccess } from '../redux/user/userSlice';
-
+import { Link } from 'react-router-dom'
 
 export default function DashProfile() {
-    const { currentUser, error, loading } = useSelector((state) => state.user);
+    const { currentUser, error } = useSelector((state) => state.user);
     const dispatch = useDispatch();
     //const [showModal, setShowModal] = useState(false);
 
@@ -38,6 +38,17 @@ export default function DashProfile() {
                     <p className='font-bold p-2'>Username : <span className='font-semibold text-gray-700'>{currentUser.username}</span></p>
                     <p className='font-bold p-2'>Email : <span className='font-semibold text-gray-700'>{currentUser.email}</span></p>
                 </div>
+                {
+                    currentUser.isAdmin && (
+                        <Link to={'/create-carpost'}>
+
+                            <Button type='button'
+                                className='text-black w-60 mx-auto border-2 border-black font font-semibold bg-yellow-200'>
+                                Post a car
+                            </Button>
+                        </Link>
+                    )
+                }
             </form>
             <div className='text-red-500 flex justify-center mt-5'>
                 {/* <span className='cursor-pointer'>Delete Account</span> */}
