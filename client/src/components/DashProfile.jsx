@@ -43,7 +43,7 @@ export default function DashProfile() {
                         <Link to={'/create-carpost'}>
 
                             <Button type='button'
-                                className='text-black w-60 mx-auto border-2 border-black font font-semibold bg-yellow-200'>
+                                className='text-black w-60 h-10 mx-auto border-2 border-black font font-semibold bg-yellow-200 flex items-center justify-center'>
                                 Post a car
                             </Button>
                         </Link>
