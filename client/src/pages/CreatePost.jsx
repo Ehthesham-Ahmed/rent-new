@@ -1,10 +1,54 @@
-import { Button, FileInput, Select, TextInput } from 'flowbite-react'
-import React from 'react'
+import { Alert, Button, FileInput, Select, TextInput } from 'flowbite-react'
+import React, { useState } from 'react'
 import { HiChevronRight, HiTicket } from 'react-icons/hi';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import { app } from '../firebase';
 
 export default function CreatePost() {
+    const [file, setFile] = useState(null);
+    const [imageUploadProgress, setImageUploadProgress] = useState(null);
+    const [imageUploadError, setImageUploadError] = useState(null);
+    const [formData, setFormData] = useState({});
+
+    const handleUploadImage = async () => {
+        try {
+            if (!file) {
+                setImageUploadError('Please choose an image file');
+                return;
+            }
+            setImageUploadError(null);
+            const storage = getStorage(app);
+            const fileName = new Date().getTime() + '-' + file.name;
+            const storageRef = ref(storage, fileName);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress =
+                        (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setImageUploadProgress(progress.toFixed(0));
+                },
+                (error) => {
+                    setImageUploadError('Image upload failed');
+                    setImageUploadProgress(null);
+                },
+                () => {
+                    getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
+                        setImageUploadProgress(null);
+                        setImageUploadError(null);
+                        setFormData({ ...formData, image: downloadURL });
+                    });
+                }
+            );
+        } catch (error) {
+            setImageUploadError('Image upload failed');
+            setImageUploadProgress(null);
+            console.log(error);
+        }
+    }
+
     return (
         <div className='p-3 max-w-3xl mx-auto min-h-screen'>
             <h1 className='text-center text-3xl my-7 font-semibold'>Car Details</h1>
@@ -48,14 +92,35 @@ export default function CreatePost() {
                     <FileInput
                         type='file'
                         accept='image/*'
-                    //onChange={(e) => setFile(e.target.files[0])}
+                        onChange={(e) => setFile(e.target.files[0])}
                     />
                     <Button type='button'
-                        className='bg-amber-500 text-black border-2 border-green-600 w-40 h-10 flex items-center justify-center'>
-                        Upload car pic
+                        className='bg-amber-500 text-black border-2 border-green-600 w-40 h-10 flex items-center justify-center'
+                        onClick={handleUploadImage}
+                        disabled={imageUploadProgress}>
+                        {
+                            imageUploadProgress ? (
+                                <div className='text-green-600'>
+                                    Uploading...
+                                </div>
+                            ) : (
+                                'Upload car pic'
+                            )
+                        }
                     </Button>
                     {/* <ReactQuill theme="snow"/> */}
                 </div>
+                {
+                    imageUploadError && <Alert className='text-red-600'> {imageUploadError} </Alert>
+                }
+                {
+                    formData.image && (
+                        <img
+                            src={formData.image}
+                            alt='upload'
+                            className='w-full h-72 object-cover'
+                        />
+                    )}
                 <Button className='text-black bg-indigo-300 border-2 border-indigo-700 h-8 flex items-center justify-center'>
                     Done
                 </Button>
