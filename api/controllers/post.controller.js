@@ -9,7 +9,7 @@ export const create = async (req, res, next) => {
     if (!req.body.carname || !req.body.carcompany || !req.body.price) {
         return next(errorHandler(400, 'Please provide all required fields'));
     }
-    const slug = req.body.carname
+    const slug = new Date().getTime() + '-' + req.body.carname
         .split(' ')
         .join('-')
         .toLowerCase()

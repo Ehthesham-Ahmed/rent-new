@@ -5,12 +5,16 @@ import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import { getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
 import { app } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 export default function CreatePost() {
     const [file, setFile] = useState(null);
     const [imageUploadProgress, setImageUploadProgress] = useState(null);
     const [imageUploadError, setImageUploadError] = useState(null);
     const [formData, setFormData] = useState({});
+    const [publishError, setPublishError] = useState(null);
+    const navigate = useNavigate();
+    //console.log(formData);
 
     const handleUploadImage = async () => {
         try {
@@ -47,35 +51,83 @@ export default function CreatePost() {
             setImageUploadProgress(null);
             console.log(error);
         }
-    }
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const res = await fetch('/api/post/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+            const data = await res.json();
+            if (!res.ok) {
+                setPublishError(data.message);
+                return;
+            }
+
+            if (res.ok) {
+                setPublishError(null);
+                navigate(`/post/${data.slug}`);
+                return;
+            }
+        } catch (error) {
+            setPublishError('Something went wrong');
+        }
+    };
 
     return (
         <div className='p-3 max-w-3xl mx-auto min-h-screen'>
             <h1 className='text-center text-3xl my-7 font-semibold'>Car Details</h1>
-            <form className='flex flex-col gap-4  my-auto'>
+            <form className='flex flex-col gap-4  my-auto'
+                onSubmit={handleSubmit}
+            >
                 <div className='flex flex-col gap-4 sm:flex-row justify-between'>
                     <TextInput type='text'
                         placeholder='Car name'
                         required
-                        id='carname' />
+                        id='carname'
+                        onChange={(e) =>
+                            setFormData({ ...formData, carname: e.target.value })
+                        }
+                    />
                     <TextInput type='text'
                         placeholder='Car company'
                         required
-                        id='carcompany' />
+                        id='carcompany'
+                        onChange={(e) =>
+                            setFormData({ ...formData, carcompany: e.target.value })
+                        }
+                    />
 
                     <TextInput type='number'
                         placeholder='Price per day'
                         required
-                        id='price' />
+                        id='price'
+                        onChange={(e) =>
+                            setFormData({ ...formData, price: e.target.value })
+                        }
+                    />
                     <Select required
-                        id='fuel'>
+                        id='fuel'
+                        onChange={(e) =>
+                            setFormData({ ...formData, fuel: e.target.value })
+                        }
+                    >
                         <option value='uncategorized'>Fuel</option>
                         <option value='petrol'>Petrol</option>
                         <option value='diesel'>Diesel</option>
                         <option value='electric'>Electric</option>
                     </Select>
                     <Select required
-                        id='seats'>
+                        id='seats'
+                        onChange={(e) =>
+                            setFormData({ ...formData, seats: e.target.value })
+                        }
+                    >
                         <option value='uncategorized'>Seats</option>
                         <option value='5seater'>5 Seater</option>
                         <option value='6seater'>6 Seater</option>
@@ -121,9 +173,13 @@ export default function CreatePost() {
                             className='w-full h-72 object-cover'
                         />
                     )}
-                <Button className='text-black bg-indigo-300 border-2 border-indigo-700 h-8 flex items-center justify-center'>
+                <Button className='text-black bg-indigo-300 border-2 border-indigo-700 h-8 flex items-center justify-center'
+                    type='submit'>
                     Done
                 </Button>
+                {
+                    publishError && <Alert className='text-red-600 mt-5'> {publishError} </Alert>
+                }
             </form>
         </div>
     )
