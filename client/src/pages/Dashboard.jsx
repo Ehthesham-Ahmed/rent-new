@@ -26,7 +26,9 @@ export default function Dashboard() {
             {tab === 'profile' && <DashProfile />}
 
             {/* posts */}
-            {tab === 'posts' && <DashPosts />}
+            <div className='md:mx-auto sm:overflow-x-auto'>
+                {tab === 'posts' && <DashPosts />}
+            </div>
         </div>
     )
 }
