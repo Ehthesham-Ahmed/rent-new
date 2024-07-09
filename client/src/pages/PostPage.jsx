@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
+import { PiSeatFill } from "react-icons/pi";
+import { BsFillFuelPumpFill } from "react-icons/bs";
+import { FaMoneyBill1Wave } from "react-icons/fa6";
+import BookSection from '../components/BookSection';
+
 
 export default function PostPage() {
     const { postSlug } = useParams();
@@ -37,15 +42,16 @@ export default function PostPage() {
             <img
                 src={post && post.image}
                 alt={post && post.title}
-                className='mt-10 p-3 max-h-[600px] w-full object-cover'
+                className='mt-10 p-3 max-h-[600px] w-full object-cover rounded-3xl border border-black'
             />
             <div className='border-b-4 border-dotted border-red-300 m-4'></div>
-            <div className='text-center border-2 border-emerald-500 rounded-3xl p-4 flex flex-col gap-4'>
-                <p className='font-bold'>Seats:  <span className='font-semibold text-gray-700'> {post && post.seats} </span> </p>
-                <p className='font-bold'>Fuel type: <span className='font-semibold text-gray-700'> {post && post.fuel} </span></p>
-                <p className='font-bold'>Price/Day: <span className='font-semibold text-gray-700'> {post && post.price} </span></p>
+            <div className='text-center items-center border-2 border-emerald-500 rounded-tl-3xl rounded-br-3xl p-4 flex flex-col gap-4'>
+                <p className='font-bold flex items-center'> <PiSeatFill className='mr-3' /> Seats:  <span className='font-semibold text-gray-700 ml-2'> {post && post.seats} </span> </p>
+                <p className='font-bold flex items-center'> <BsFillFuelPumpFill className='mr-3' /> Fuel type: <span className='font-semibold text-gray-700 ml-2'> {post && post.fuel} </span></p>
+                <p className='font-bold flex items-center'> <FaMoneyBill1Wave className='mr-3' /> Price/Day: <span className='font-semibold text-gray-700 ml-2'> {post && post.price} </span></p>
             </div>
             <div className='border-b-4 border-dotted border-red-300 m-4'></div>
+            <BookSection postId={post && post._id} />
         </main>
     )
 }
