@@ -6,7 +6,7 @@ import { differenceInCalendarDays } from 'date-fns';
 
 
 
-export default function BookSection(postId) {
+export default function BookSection({ postId }) {
     const { currentUser } = useSelector(state => state.user);
     const { postSlug } = useParams();
     const [error, setError] = useState(false);
@@ -36,7 +36,33 @@ export default function BookSection(postId) {
     const today = new Date().toISOString().split('T')[0];
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    //console.log(req.body);
+    //const cost = post && post.price;
     //console.log(fromDate, toDate);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!startDate || !endDate) {
+            return;
+        }
+
+        try {
+            const res = await fetch('/api/book/create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ postId, userId: currentUser._id, startDate: fromDate, endDate: toDate }),
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setFromDate('');
+                setToDate('');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <div className='max-w-2xl mx-auto w-full p-3'>
@@ -59,7 +85,8 @@ export default function BookSection(postId) {
                     </div>
                 )}
             {currentUser && (
-                <form>
+                <form className='p-3'
+                    onSubmit={handleSubmit}>
                     <div className=''>
                         <div className='bg-slate-200 rounded-2xl border-2 border-teal-500 shadow-lg p-4'>
                             <div className='text-center text-2xl'>
@@ -72,6 +99,7 @@ export default function BookSection(postId) {
                                         className='mt-1 w-full'
                                         min={today}
                                         value={fromDate}
+                                        id='startDate'
                                         onChange={e => setFromDate(e.target.value)}
                                     />
                                 </div>
@@ -81,6 +109,7 @@ export default function BookSection(postId) {
                                         className='mt-1 w-full'
                                         value={toDate}
                                         min={fromDate}
+                                        id='endDate'
                                         onChange={e => setToDate(e.target.value)}
                                     />
                                 </div>
@@ -101,7 +130,8 @@ export default function BookSection(postId) {
                             )
                         }
                     </div>
-                    <Button className='text-white w-40 h-10 flex items-center bg-violet-700 border-4 border-cyan-200 mx-auto mt-4'>
+                    <Button className='text-white w-40 h-10 flex items-center bg-violet-700 border-4 border-cyan-200 mx-auto mt-4'
+                        type='submit'>
                         Book Now
                     </Button>
                 </form>
