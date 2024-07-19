@@ -1,4 +1,4 @@
-import { Button } from 'flowbite-react';
+import { Alert, Button } from 'flowbite-react';
 import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
@@ -11,6 +11,8 @@ export default function BookSection({ postId }) {
     const { postSlug } = useParams();
     const [error, setError] = useState(false);
     const [post, setPost] = useState(null);
+    const [bookings, setBookings] = useState([]);
+    console.log(bookings);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -36,6 +38,7 @@ export default function BookSection({ postId }) {
     const today = new Date().toISOString().split('T')[0];
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
+    const [bookError, setBookError] = useState(null);
     //console.log(req.body);
     //const cost = post && post.price;
     //console.log(fromDate, toDate);
@@ -58,11 +61,27 @@ export default function BookSection({ postId }) {
             if (res.ok) {
                 setFromDate('');
                 setToDate('');
+                setBookError(null);
             }
         } catch (error) {
-            console.log(error);
+            setBookError(error.message);
         }
     };
+
+    useEffect(() => {
+        const getBookings = async () => {
+            try {
+                const res = await fetch(`/api/book/getCarBookings/${postId}`);
+                if (res.ok) {
+                    const data = await res.json();
+                    setBookings(data);
+                }
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        getBookings();
+    }, [postId])
 
     return (
         <div className='max-w-2xl mx-auto w-full p-3'>
@@ -134,9 +153,11 @@ export default function BookSection({ postId }) {
                         type='submit'>
                         Book Now
                     </Button>
+                    {bookError &&
+                        (<Alert className='text-red-500 my-5'> {bookError} </Alert>)
+                    }
                 </form>
-            )
-            }
+            )}
         </div >
     )
 }

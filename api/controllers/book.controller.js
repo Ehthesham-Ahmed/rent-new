@@ -24,3 +24,13 @@ export const bookCar = async (req, res, next) => {
     }
 };
 
+export const getCarBookings = async (req, res, next) => {
+    try {
+        const bookings = await Book.find({ postId: req.params.postId }).sort({
+            createdAt: -1,
+        });
+        res.status(200).json(bookings);
+    } catch (error) {
+        next(error);
+    }
+};
