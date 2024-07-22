@@ -3,6 +3,7 @@ import { useLocation } from 'react-router-dom';
 import DashSidebar from '../components/DashSidebar';
 import DashProfile from '../components/DashProfile';
 import DashPosts from '../components/DashPosts';
+import DashBookings from '../components/DashBookings';
 
 export default function Dashboard() {
     const location = useLocation();
@@ -29,6 +30,11 @@ export default function Dashboard() {
             <div className='md:mx-auto sm:overflow-x-auto'>
                 {tab === 'posts' && <DashPosts />}
             </div>
-        </div>
+
+            {/* Bookings */}
+            <div className='md:mx-auto sm:overflow-x-auto'>
+                {tab === 'bookings' && <DashBookings />}
+            </div>
+        </div >
     )
 }

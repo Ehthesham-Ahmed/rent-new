@@ -22,10 +22,10 @@ const bookSchema = new mongoose.Schema(
             type: Array,
             default: [],
         },
-        numberOfBookings: {
-            type: Number,
-            default: 0,
-        },
+        // totalPrice: {
+        //     type: Number,
+        //     default: 0,
+        // },
     }, { timestamps: true }
 );
 

@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { useSelector } from 'react-redux'
 import { Link, useParams } from 'react-router-dom';
 import { differenceInCalendarDays } from 'date-fns';
+import Booking from './Booking';
 
 
 
@@ -12,7 +13,7 @@ export default function BookSection({ postId }) {
     const [error, setError] = useState(false);
     const [post, setPost] = useState(null);
     const [bookings, setBookings] = useState([]);
-    console.log(bookings);
+    //console.log(bookings);
 
     useEffect(() => {
         const fetchPost = async () => {
@@ -39,16 +40,23 @@ export default function BookSection({ postId }) {
     const [fromDate, setFromDate] = useState('');
     const [toDate, setToDate] = useState('');
     const [bookError, setBookError] = useState(null);
+    const [price, setPrice] = useState(0);
     //console.log(req.body);
     //const cost = post && post.price;
     //console.log(fromDate, toDate);
+    // const calculatePrice = () => {
+    //     const daysDifference = differenceInCalendarDays(new Date(toDate), new Date(fromDate));
+    //     return daysDifference === 0 ? post.price : daysDifference * post.price;
+    // };
+    //console.log(calculatePrice);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!startDate || !endDate) {
             return;
         }
-
+        // const calculatedPrice = calculatePrice(fromDate, toDate);
+        // console.log(calculatedPrice);
         try {
             const res = await fetch('/api/book/create', {
                 method: 'POST',
@@ -62,6 +70,13 @@ export default function BookSection({ postId }) {
                 setFromDate('');
                 setToDate('');
                 setBookError(null);
+                setBookings([data, ...bookings]);
+                setPrice(0);
+                // const daysDifference = differenceInCalendarDays(new Date(toDate), new Date(fromDate));
+                // const calculatedPrice = daysDifference === 0
+                //     ? post.price
+                //     : daysDifference * post.price;
+                // setPrice(calculatedPrice);
             }
         } catch (error) {
             setBookError(error.message);
@@ -135,20 +150,32 @@ export default function BookSection({ postId }) {
                             </div>
                         </div>
                     </div>
-                    <div className="p-4 mt-4 text-center bg-red-200 rounded-lg shadow-md">
 
-                        {
-                            fromDate && toDate && (
-                                <span className="text-lg font-semibold text-[#a30463]">
-                                    Your total cost is: Rs {
-                                        differenceInCalendarDays(new Date(toDate), new Date(fromDate)) === 0
-                                            ? (post && post.price)
-                                            : differenceInCalendarDays(new Date(toDate), new Date(fromDate)) * (post && post.price)
-                                    }
-                                </span>
-                            )
-                        }
-                    </div>
+
+                    {
+                        fromDate && toDate && (
+                            <div className="p-4 mt-4 text-center bg-red-200 rounded-lg shadow-md">
+                                <>
+                                    <p>Your total cost is: Rs</p>
+                                    <span className="text-lg font-semibold text-[#a30463]"
+                                        id='price'>
+                                        {
+                                            differenceInCalendarDays(new Date(toDate), new Date(fromDate)) === 0
+                                                ? (post && post.price)
+                                                : differenceInCalendarDays(new Date(toDate), new Date(fromDate)) * (post && post.price)
+                                        }
+                                    </span>
+
+                                    {/* <span className="text-lg font-semibold text-[#a30463]"
+                                        id="price">
+                                        {price}
+                                    </span> */}
+                                </>
+                            </div>
+                        )
+
+                    }
+
                     <Button className='text-white w-40 h-10 flex items-center bg-violet-700 border-4 border-cyan-200 mx-auto mt-4'
                         type='submit'>
                         Book Now
@@ -157,6 +184,24 @@ export default function BookSection({ postId }) {
                         (<Alert className='text-red-500 my-5'> {bookError} </Alert>)
                     }
                 </form>
+            )}
+            {currentUser.isAdmin && bookings.length === 0 ? (
+                <p className='test-sm my-5'>No Bookings yet</p>
+            ) : (
+                <>
+                    <div className='text-sm my-5 flex items-center gap-1'>
+                        <p>Bookings:</p>
+                        <div className='border border-gray-500 py-1 px-2 rounded-lg'>
+                            <p> {bookings.length} </p>
+                        </div>
+                    </div>
+                    {
+                        bookings.map(booking => (
+                            <Booking key={booking._id}
+                                booking={booking} />
+                        ))
+                    }
+                </>
             )}
         </div >
     )

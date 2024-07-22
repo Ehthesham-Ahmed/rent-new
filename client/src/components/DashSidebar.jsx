@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router-dom';
 import { signoutSuccess } from '../redux/user/userSlice';
 import { useDispatch, useSelector } from 'react-redux';
 import { FaCar } from "react-icons/fa";
+import { MdOutlineDownloadDone } from "react-icons/md";
 
 export default function DashSidebar() {
     const location = useLocation();
@@ -52,12 +53,20 @@ export default function DashSidebar() {
                     </Link>
 
                     {currentUser.isAdmin && (
-                        <Link to='/dashboard?tab=posts'>
-                            <Sidebar.Item active={tab === 'posts'}
-                                icon={FaCar}
-                                as='div'
-                            > Cars posted </Sidebar.Item>
-                        </Link>
+                        <>
+                            <Link to='/dashboard?tab=posts'>
+                                <Sidebar.Item active={tab === 'posts'}
+                                    icon={FaCar}
+                                    as='div'
+                                > Cars posted </Sidebar.Item>
+                            </Link>
+                            <Link to='/dashboard?tab=bookings'>
+                                <Sidebar.Item active={tab === 'bookings'}
+                                    icon={MdOutlineDownloadDone}
+                                    as='div'
+                                > Bookings </Sidebar.Item>
+                            </Link>
+                        </>
                     )}
 
                     <Sidebar.Item icon={HiArrowSmRight}
