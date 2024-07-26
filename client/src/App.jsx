@@ -9,20 +9,13 @@ import PrivateRoute from './components/PrivateRoute'
 import OnlyAdminPrivateRoute from './components/OnlyAdminPrivateRoute'
 import CreatePost from './pages/CreatePost'
 import PostPage from './pages/PostPage'
-import HomePage from './pages/HomePage'
-import Suggest from './pages/Suggest'
-import Predict from './pages/Predict'
-import Footer from './components/Footer'
 
 export default function App() {
   return (
     <BrowserRouter>
       <Header />
       <Routes>
-        <Route path='/' element={<HomePage />} />
-        <Route path='/suggest' element={<Suggest />} />
-        <Route path='/predict' element={<Predict />} />
-        <Route path='/rent' element={<Home />} />
+        <Route path='/' element={<Home />} />
         <Route path='/sign-in' element={<SignIn />} />
         <Route path='/sign-up' element={<SignUp />} />
         <Route element={<PrivateRoute />}>
@@ -33,7 +26,6 @@ export default function App() {
         </Route>
         <Route path='/post/:postSlug' element={<PostPage />} />
       </Routes>
-      <Footer />
     </BrowserRouter>
   )
 }
