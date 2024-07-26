@@ -25,7 +25,7 @@ export default function Home() {
                                     post={post} />
                             ))}
                         </div>
-                        <Link to={'/search'}
+                        <Link to={'/filter'}
                             className='text-lg text-teal-500 hover:underline text-center'>
                             Filter
                         </Link>
